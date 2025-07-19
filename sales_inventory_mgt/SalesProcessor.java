@@ -48,30 +48,7 @@ public final class SalesProcessor {
                 }
             }
 
-            int quantity = -1;
-            while (true) {
-                System.out.print("Enter quantity to buy: ");
-                String input = scanner.nextLine();
-
-                try {
-                    quantity = Integer.parseInt(input);
-
-                    if (quantity < 0) {
-                        throw new IllegalArgumentException("negative");
-                    }
-
-                    if (quantity == 0) {
-                        System.out.println("Quantity cannot be zero.");
-                    } else {
-                        break;
-                    }
-
-                } catch (NumberFormatException e) {
-                    System.out.println("Quantity must be a positive number.");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Quantity cannot be negative.");
-                }
-            }
+            int quantity = promptForQuantity(scanner, "Enter quantity to sell: ");
 
             if (inventory.getStockLevel(selectedProduct) < quantity) {
                 System.out.println("Not enough stock for " + selectedProduct.getName());
@@ -162,5 +139,32 @@ public final class SalesProcessor {
 
         System.out.println("Total Paid: $" + totalPaid);
         System.out.println("Thank you for shopping at Tech-Hub Mart!\n");
+    }
+
+    public static int promptForQuantity(Scanner scanner, String promptMessage) {
+        int quantity = -1;
+        while (true) {
+            System.out.print(promptMessage);
+            String input = scanner.nextLine();
+
+            try {
+                quantity = Integer.parseInt(input);
+
+                if (quantity < 0) {
+                    throw new IllegalArgumentException("negative");
+                }
+
+                if (quantity == 0) {
+                    System.out.println("Quantity cannot be zero.");
+                } else {
+                    return quantity; // valid quantity
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Quantity must be a positive number.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Quantity cannot be negative.");
+            }
+        }
     }
 }

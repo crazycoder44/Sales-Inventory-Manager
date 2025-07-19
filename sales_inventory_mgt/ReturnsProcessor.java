@@ -115,7 +115,7 @@ public final class ReturnsProcessor {
         System.out.println("-----------------------------\n");
     }
 
-    // BONUS: Returnable quantity calculator for specific product
+    // Returnable quantity calculator for specific product
     public static int getRemainingRefundableQuantity(
         String purchaseID,
         Product product,

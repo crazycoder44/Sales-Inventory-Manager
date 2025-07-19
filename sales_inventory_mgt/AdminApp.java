@@ -40,30 +40,7 @@ public final class AdminApp {
                         }
                     }
                     
-                    double price = -1;
-                    while (true) {
-                        System.out.print("Enter product price: ");
-                        String input = scanner.nextLine();
-
-                        try {
-                            price = Double.parseDouble(input);
-
-                            if (price < 0) {
-                                throw new IllegalArgumentException("negative");
-                            }
-
-                            if (price == 0) {
-                                System.out.println("Product price cannot be zero.");
-                            } else {
-                                break; // valid price
-                            }
-
-                        } catch (NumberFormatException e) {
-                            System.out.println("Product price must be a positive number.");
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Product price cannot be negative.");
-                        }
-                    }
+                    double price = promptForPrice(scanner, "Enter product price: ");
 
                     Product p = new Product(name, price);
                     productCatalog.add(p);
@@ -77,55 +54,9 @@ public final class AdminApp {
                         break;
                     }
 
-                    System.out.println("\nSelect a product to update:");
-                    for (int i = 0; i < productCatalog.size(); i++) {
-                        Product p = productCatalog.get(i);
-                        System.out.println((i + 1) + ". " + p.getName() + " ($" + p.getPrice() + ")");
-                    }
+                    Product selectedProduct = promptForProductSelection(scanner, productCatalog, "update");
 
-                    Product selectedProduct = null;
-
-                    while (selectedProduct == null) {
-                        System.out.print("Enter option number: ");
-                        int selection;
-                        try {
-                            selection = Integer.parseInt(scanner.nextLine()) - 1;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a number.");
-                            continue;
-                        }
-
-                        if (selection < 0 || selection >= productCatalog.size()) {
-                            System.out.println("Invalid selection. Please choose a valid product number.");
-                        } else {
-                            selectedProduct = productCatalog.get(selection);
-                        }
-                    }
-
-                    double newPrice = -1;
-                    while (true) {
-                        System.out.print("Enter new price for " + selectedProduct.getName() + ": ");
-                        String input = scanner.nextLine();
-
-                        try {
-                            newPrice = Double.parseDouble(input);
-
-                            if (newPrice < 0) {
-                                throw new IllegalArgumentException("negative");
-                            }
-
-                            if (newPrice == 0) {
-                                System.out.println("Product price cannot be zero.");
-                            } else {
-                                break;
-                            }
-
-                        } catch (NumberFormatException e) {
-                            System.out.println("Product price must be a positive number.");
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Product price cannot be negative.");
-                        }
-                    }
+                    double newPrice = promptForPrice(scanner, "Enter new price for " + selectedProduct.getName() + ": ");
 
                     selectedProduct.setPrice(newPrice);
                     System.out.println("Price for " + selectedProduct.getName() + " updated to $" + newPrice);
@@ -138,31 +69,7 @@ public final class AdminApp {
                         break;
                     }
 
-                    System.out.println("\nSelect a product to delete:");
-                    for (int i = 0; i < productCatalog.size(); i++) {
-                        Product p = productCatalog.get(i);
-                        System.out.println((i + 1) + ". " + p.getName() + " ($" + p.getPrice() + ")");
-                    }
-
-                    Product selectedProduct = null;
-
-                    while (selectedProduct == null) {
-                        System.out.print("Enter option number: ");
-                        int selection;
-
-                        try {
-                            selection = Integer.parseInt(scanner.nextLine()) - 1;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid selection. Please choose a valid product number.");
-                            continue;
-                        }
-
-                        if (selection < 0 || selection >= productCatalog.size()) {
-                            System.out.println("Invalid selection. Please choose a valid product number.");
-                        } else {
-                            selectedProduct = productCatalog.get(selection);
-                        }
-                    }
+                    Product selectedProduct = promptForProductSelection(scanner, productCatalog, "update");
 
                     final Product productToDelete = selectedProduct;
 
@@ -202,58 +109,11 @@ public final class AdminApp {
                         break;
                     }
 
-                    System.out.println("\nSelect a product to add to inventory:");
-                    for (int i = 0; i < productCatalog.size(); i++) {
-                        Product p = productCatalog.get(i);
-                        System.out.println((i + 1) + ". " + p.getName() + " ($" + p.getPrice() + ")");
-                    }
-
-                    Product selectedProduct = null;
-
-                    while (selectedProduct == null) {
-                        System.out.print("Enter option number: ");
-                        int selection;
-
-                        try {
-                            selection = Integer.parseInt(scanner.nextLine()) - 1;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid selection. Please choose a valid product number.");
-                            continue;
-                        }
-
-                        if (selection < 0 || selection >= productCatalog.size()) {
-                            System.out.println("Invalid selection. Please choose a valid product number.");
-                        } else {
-                            selectedProduct = productCatalog.get(selection);
-                        }
-                    }
+                    Product selectedProduct = promptForProductSelection(scanner, productCatalog, "update");
 
                     final Product productToAdd = selectedProduct;
 
-                    int quantity = -1;
-                    while (true) {
-                        System.out.print("Enter quantity to add to inventory for " + productToAdd.getName() + ": ");
-                        String input = scanner.nextLine();
-
-                        try {
-                            quantity = Integer.parseInt(input);
-
-                            if (quantity < 0) {
-                                throw new IllegalArgumentException("negative");
-                            }
-
-                            if (quantity == 0) {
-                                System.out.println("Product quantity cannot be zero!");
-                            } else {
-                                break; // valid quantity
-                            }
-
-                        } catch (NumberFormatException e) {
-                            System.out.println("Product quantity must be a positive number!");
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Product quantity cannot be negative!");
-                        }
-                    }
+                    int quantity = SalesProcessor.promptForQuantity(scanner, "Enter quantity to add to inventory for " + productToAdd.getName() + ": ");
 
                     inventory.addStock(productToAdd, quantity);
                     System.out.println("Added " + quantity + " unit(s) of " + productToAdd.getName() + " to inventory.");
@@ -301,6 +161,62 @@ public final class AdminApp {
             }
         }
     }
+
+    // Reusable method to prompt and validate price input
+    public static double promptForPrice(Scanner scanner, String promptMessage) {
+        double price;
+
+        while (true) {
+            System.out.print(promptMessage);
+            String input = scanner.nextLine();
+
+            try {
+                price = Double.parseDouble(input);
+
+                if (price < 0) {
+                    throw new IllegalArgumentException("negative");
+                }
+
+                if (price == 0) {
+                    System.out.println("Product price cannot be zero.");
+                } else {
+                    return price; // valid price
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Product price must be a positive number.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Product price cannot be negative.");
+            }
+        }
+    }
+
+    // Reusable method to prompt user to select a product
+    public static Product promptForProductSelection(Scanner scanner, List<Product> productCatalog, String action) {
+        System.out.println("\nSelect a product to " + action + ":");
+        for (int i = 0; i < productCatalog.size(); i++) {
+            Product p = productCatalog.get(i);
+            System.out.println((i + 1) + ". " + p.getName() + " ($" + p.getPrice() + ")");
+        }
+
+        while (true) {
+            System.out.print("Enter option number: ");
+            try {
+                int selection = Integer.parseInt(scanner.nextLine()) - 1;
+
+                if (selection < 0 || selection >= productCatalog.size()) {
+                    System.out.println("Invalid selection. Please choose a valid product number.");
+                } else {
+                    return productCatalog.get(selection);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    // Reusable method to pause execution briefly
+    // with an optional message
     public static void sleepBriefly(String message) {
         try {
             Thread.sleep(1000);
